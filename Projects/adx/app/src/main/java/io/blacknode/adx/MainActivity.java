@@ -2,6 +2,8 @@ package io.blacknode.adx;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -56,25 +58,21 @@ public class MainActivity extends AppCompatActivity {
 
         mMainFrame = (FrameLayout) findViewById(R.id.main_frame);
         mMainNav= (BottomNavigationView) findViewById (R.id.bottomNavigationView);
-
         mapFragment = new MapFragment();
         userFragment = new UserProfile();
         cameraFragment = new CameraFragment();
-
-        setFragment(cameraFragment);
+        setFragment(mapFragment);
 
         mMainNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch(item.getItemId()){
                     case R.id.nav_map:
-                        mMainNav.setItemBackgroundResource((R.color.colorPrimary));
                         setFragment(mapFragment);
 
                         return true;
 
                     case R.id.nav_camera:
-                        mMainNav.setItemBackgroundResource(R.color.colorAccent);
                         if(mapFragment.isVisible()){
                             mapFragment.onDestroy();
                         }
@@ -82,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
                         return true;
 
                     case R.id.nav_user:
-                        mMainNav.setItemBackgroundResource(R.color.colorPrimaryDark);
                         if(mapFragment.isVisible()){
                             mapFragment.onDestroy();
                         }
@@ -110,17 +107,28 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(MainActivity.this,"Log In!",Toast.LENGTH_SHORT).show();
 
-                    // User is signed in
-                    Intent i = new Intent(MainActivity.this, LoginPage.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(i);
+
                 }
                 // ...
             }
         };
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Toast.makeText(this,"View Created Log In!",Toast.LENGTH_SHORT).show();
+
+            // User is signed in
+//            setFragment(userFragment);
+        }
+        else{
+            Toast.makeText(this,"VC Logged In!",Toast.LENGTH_SHORT).show();
+//            mLogin =  findViewById(R.id.login);
+//            mLogin.setText(R.string.logout);
+        }
 
 
-}
+
+
+    }
 
 
     private void setFragment(Fragment fragment) {
@@ -129,16 +137,5 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
 
 }
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-    }
+
 }

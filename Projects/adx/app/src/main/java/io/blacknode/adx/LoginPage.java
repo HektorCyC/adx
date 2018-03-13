@@ -37,7 +37,7 @@ public class LoginPage extends AppCompatActivity {
     private EditText _passwordText;
 
     private Button _loginButton;
-    private TextView _signupLink;
+    private Button _signupLink;
 
 
     @Override
@@ -47,11 +47,10 @@ public class LoginPage extends AppCompatActivity {
         _nameText = findViewById(R.id.input_name);
         _emailText = findViewById(R.id.input_email);
         _passwordText= findViewById(R.id.input_password);
-        _loginButton = findViewById(R.id.btn_signup);
-        _signupLink = findViewById(R.id.link_login);
+        _loginButton = findViewById(R.id.btn_login);
+        _signupLink = findViewById(R.id.link_signup);
 
 
-        FirebaseApp.initializeApp(this.getBaseContext());
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -64,18 +63,17 @@ public class LoginPage extends AppCompatActivity {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
-                // ...
+
             }
         };
 
-
         _loginButton.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 login();
             }
         });
+
 
         _signupLink.setOnClickListener(new View.OnClickListener() {
 
@@ -142,11 +140,14 @@ public class LoginPage extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGNUP) {
-            if (resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK && getFragmentManager().getBackStackEntryCount() == 0) {
 
                 // TODO: Implement successful signup logic here
                 // By default we just finish the Activity and log them in automatically
                 this.finish();
+            }
+            else if (resultCode == RESULT_OK && getFragmentManager().getBackStackEntryCount() != 0){
+                getFragmentManager().popBackStack();
             }
         }
     }
@@ -159,7 +160,7 @@ public class LoginPage extends AppCompatActivity {
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
-        finish();
+        getFragmentManager().popBackStack();
     }
 
     public void onLoginFailed() {
@@ -181,8 +182,8 @@ public class LoginPage extends AppCompatActivity {
             _emailText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+        if (password.isEmpty() || password.length() < 4 || password.length() > 20) {
+            _passwordText.setError("between 4 and 20 alphanumeric characters");
             valid = false;
         } else {
             _passwordText.setError(null);

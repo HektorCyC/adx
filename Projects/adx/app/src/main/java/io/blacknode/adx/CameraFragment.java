@@ -81,13 +81,15 @@ public class CameraFragment extends Fragment implements
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setupListeners();
-        setupLayout();
-        setAugmentedRealityPoint();
+
+                setupListeners();
+                setupLayout();
+                setAugmentedRealityPoint();
+
+            }
 
 
 
-    }
 
 
 
@@ -155,11 +157,11 @@ public class CameraFragment extends Fragment implements
         return false;
     }
 
-    private void updateDescription() {
-        descriptionTextView.setText(mPoi.getPoiName() + " azimuthTeoretical "
-                + mAzimuthTeoretical + " azimuthReal " + mAzimuthReal + " latitude "
-                + mMyLatitude + " longitude " + mMyLongitude);
-    }
+//    private void updateDescription() {
+//        descriptionTextView.setText(mPoi.getPoiName() + " azimuthTeoretical "
+//                + mAzimuthTeoretical + " azimuthReal " + mAzimuthReal + " latitude "
+//                + mMyLatitude + " longitude " + mMyLongitude);
+//    }
 
     @Override
     public void onLocationChanged(Location location) {
@@ -167,7 +169,7 @@ public class CameraFragment extends Fragment implements
         mMyLongitude = location.getLongitude();
         mAzimuthTeoretical = calculateTeoreticalAzimuth();
         Toast.makeText(getActivity(),"latitude: "+location.getLatitude()+" longitude: "+location.getLongitude(), Toast.LENGTH_SHORT).show();
-        updateDescription();
+//        updateDescription();
     }
 
     @Override
@@ -175,7 +177,7 @@ public class CameraFragment extends Fragment implements
         mAzimuthReal = azimuthChangedTo;
         mAzimuthTeoretical = calculateTeoreticalAzimuth();
 
-        pointerIcon = (ImageView) getView().findViewById(R.id.icon);
+        pointerIcon =  getView().findViewById(R.id.icon);
 
         double minAngle = calculateAzimuthAccuracy(mAzimuthTeoretical).get(0);
         double maxAngle = calculateAzimuthAccuracy(mAzimuthTeoretical).get(1);
@@ -186,7 +188,7 @@ public class CameraFragment extends Fragment implements
             pointerIcon.setVisibility(View.INVISIBLE);
         }
 
-        updateDescription();
+//        updateDescription();
     }
 
     @Override
@@ -271,7 +273,7 @@ public class CameraFragment extends Fragment implements
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        descriptionTextView = getView().findViewById(R.id.cameraTextView);
+//        descriptionTextView = getView().findViewById(R.id.cameraTextView);
 
         getActivity().getWindow().setFormat(PixelFormat.UNKNOWN);
         SurfaceView surfaceView =  getView().findViewById(R.id.cameraview);
